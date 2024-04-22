@@ -1,0 +1,14 @@
+[Unit]
+Description=Publisher program for bus data
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=no
+ExecStart=/home/sridhamo/env/bin/python /home/sridhamo/publisher.py
+WorkingDirectory=/home/sridhamo
+User=sridhamo
+Group=sridhamo
+
+[Install]
+WantedBy=multi-user.target
