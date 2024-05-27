@@ -147,21 +147,37 @@ def callback(message: pubsub_v1.subscriber.message.Message) -> None:
     with open(file_name, 'a') as file:
         file.write(json.dumps(json_message) + '\n')
     
-    # Copy the CSV data to the PostgreSQL table
-    copy_csv_to_db(tempfile_path, 'stop_events', db_params)
-    print("inserted {received_messages} data to db")
+    #print("inserted {received_messages} data to db")
     message.ack()
 
 print(f"Listening for messages on {subscription_path}..\n")
 
-subscriber = pubsub_v1.SubscriberClient()
-streaming_pull_future = subscriber.subscribe(subscription_path, callback=callback)
+if __name__ == "__main__":
+    while True:
+        subscriber = pubsub_v1.SubscriberClient()
+        subscription_path = subscriber.subscription_path(project_id, subscription_id)
+        with subscriber:
+            streaming_pull_future = subscriber.subscribe(subscription_path, callback=callback)
+            try:
+                streaming_pull_future.result(timeout=1000)
+            except TimeoutError:
+                print(f"Dumping csv records to database.")
+                    # Copy the CSV data to the database
+                copy_csv_to_db(tempfile_path, 'stop_events', db_params)
+                print(f"Completed Dumping csv records to database.")
+                os.remove(tempfile_path)
 
-# Keep the subscriber listening
-with subscriber:
-    try:
-        streaming_pull_future.result()
-    except KeyboardInterrupt:
-        streaming_pull_future.cancel()
-        streaming_pull_future.result()
+            except Exception as e:
+                print(f"Error: {e}")
+                streaming_pull_future.cancel()
+                streaming_pull_future.result()
+
+    finally:
+        cur.close()
+        conn.close()
+    
+        
+        
+
+
 
