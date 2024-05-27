@@ -161,6 +161,16 @@ def callback(message: pubsub_v1.subscriber.message.Message) -> None:
         print("Error: Inconsistent coordinates")
         return
     
+    # Map the service key value
+    service_key_map = {'W': 'Weekday', 'U': 'Sunday', 'S': 'Saturday'}
+    if service_key in service_key_map:
+        service_key = service_key_map[service_key]
+
+    # Map the direction value
+    direction_map = {'0': 'Out', '1': 'Back'}
+    if direction in direction_map:
+        direction = direction_map[direction]
+        
     with open(tempfile_path, mode='a', newline='') as file:
         writer = csv.writer(file)
         if os.stat(tempfile_path).st_size == 0:
