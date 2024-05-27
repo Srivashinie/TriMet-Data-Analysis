@@ -1,0 +1,6 @@
+View to integrate breadcrumb and trip table:
+
+CREATE VIEW trip_stop_events AS
+SELECT DISTINCT se.trip_id, se.vehicle_number AS vehicle_id, se.route_number AS route_id, se.service_key, se.direction
+FROM trip t
+JOIN stop_events se ON t.trip_id = se.trip_id AND t.vehicle_id = se.vehicle_number;
