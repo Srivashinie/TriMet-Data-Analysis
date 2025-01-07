@@ -11,9 +11,7 @@ The TriMet Bus Data Analysis System is designed to process and analyze transit d
 
 **System Architecture**
 
-
 ![GCP horizontal framework](https://github.com/chethana613/TriMet/assets/56347342/4852cfc1-b22f-4f96-9fdd-eac9654d90b6)
-
 The system architecture comprises several coordinated components:
 - Data Source: TriMet APIs for GPS sensor (breadcrumb) and stop event data.
 - Data Collection: Automated using cron jobs running on GCP Virtual Machines (VMs).
